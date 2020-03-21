@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>My Game</title>
+    </head>
+    <body>
+
+        <div id="todaySchedule">
+            <div class="schedules tableTemplates" id="todaysPeriods">
+                <h3> <span id="today"></span> Schedule</h3>
+
+                <table id="todayTable" style="width:100%">
+                    <tr>
+                        <th>Time</th>
+                        <th colspan="2" style="text-align: left;">Period</th> 
+                    </tr>
+
+                    <!-- <tr>
+                        <td>11:40 PM</td>
+                        <td>1</td>
+                        <td>Free Period</td>
+                    </tr> -->
+                    
+                </table>
+            </div>
+
+        </div>
+
+        <div id="weekSchedule">
+            <div class="schedules tableTemplates" id="weekPeriods">
+                <h3>This Weeks Schedule</h3>
+                <table id="weekTable" style="width:100%" CELLSPACING=0>
+                    <colgroup>
+                        <col id="Mon" />
+                        <col id="Tues"/>
+                        <col id="Wednes" />
+                        <col id="Thurs"/>
+                        <col id="Fri" />
+                    </colgroup>
+                    <tr style="background-color: lightblue;">
+                        <th>Mon</th>
+                        <th>Tue</th> 
+                        <th>Wed</th>
+                        <th>Thu</th> 
+                        <th>Fri</th>
+                    </tr>
+                    <!-- <tr>
+                            <td>Per 1</td>
+                            <td>Per 2</td>
+                            <td>Per 1</td>
+                            <td>Per 2</td>
+                            <td>Per 1</td>
+                        </tr> -->
+                </table>
+            </div>
+        </div>
+
+        <a id="eachPeriodButton" href="eachPeriod.html"> Edit Periods </a>
+
+    </body>
+    <link href="index.css" rel="stylesheet">
+    <script src="js/functions.js"></script>
+    <script src="js/classes.js"></script>
+
+</html>
