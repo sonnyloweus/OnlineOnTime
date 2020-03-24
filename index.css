@@ -5,9 +5,40 @@ body{
     overflow-y: hidden;
 }
 
+::-webkit-scrollbar {
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+::-webkit-scrollbar-thumb {
+    background: lightblue;
+    border-radius: 10px;    
+}
+
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: lightblue;
+    cursor: pointer;
+}
+
+::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: lightblue;
+    cursor: pointer;
+}
+
 .schedules{
     margin: 10px;
-    width: calc(100% - 26px);
+    width: calc(100% - 18px);
     padding-bottom: 20px;
     height: auto;
     border: 3px solid lightblue;
@@ -33,22 +64,187 @@ body{
 #eachPeriodButton{
     position: absolute;
     bottom: 0;
-    margin: 0;
-    padding: 0px;
+    margin: 0px;
     width: calc(100% - 20px);
-    height: 6vh;
-    padding-top: 1.5vh;
+    height: 8vh;
+    padding: 2vh;
     background-color: lightblue;
+    border: none;
     text-decoration: none;
     font-size: 3vh;
     text-align: center;
     font-weight: 600;
     color: black;
     margin: 10px;
+    z-index: 10;
 }
 
 #eachPeriodButton:hover{
     background-color: blue;
     transition: 1s;
     color: white;
+}
+
+#editPeriods{
+    display: none;
+    z-index: 5;
+    background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 26px);
+    height: 480px;
+    margin: 10px;
+    padding-bottom: 30px;
+    overflow-y: scroll;
+    border: 3px solid lightblue;
+}
+
+#home{
+    max-height: 540px;
+    overflow-y: scroll;
+}
+
+#newPeriod{
+    position: absolute;
+    top: 0;
+    left: 50.5%;
+    transform: translate(-49.5%);
+    margin: 0px;
+    width: calc(100% - 10px);
+    height: 10vh;
+    padding: 3vh;
+    background-color: lightblue;
+    border: none;
+    text-decoration: none;
+    font-size: 4vh;
+    text-align: center;
+    font-weight: 600;
+    color: black;
+    margin-top: 10px;
+    z-index: 10;
+}
+
+#newPeriod:hover{
+    background-color: blue;
+    transition: 1s;
+    color: white;
+}
+
+#periodTable{
+    margin-top: 16vh;
+    font-size: 15px;
+    overflow: scroll;
+}
+
+#periodTable td{
+    padding-bottom: 15px;
+    font-size: 12px;
+}
+
+.edit{
+    border: none;
+    background: none;
+    font-size: 20px;
+}
+
+.edit:hover{
+    color: blue;
+}
+
+#newPeriodSettings{
+    position: absolute;
+    top: 78px;
+    left: 50.5%;
+    transform: translate(-49.5%);
+    margin: 0px;
+    width: calc(100% - 20px);
+    height: 234px;
+    background-color: white;
+    border: 3px solid lightblue;
+    text-align: center;
+    max-height: 0px;
+    overflow: hidden;
+    transition: 1.5s;
+}
+
+#editPeriodSettings{
+    position: absolute;
+    top: 78px;
+    left: 50.5%;
+    transform: translate(-49.5%);
+    margin: 0px;
+    width: calc(100% - 20px);
+    height: 234px;
+    background-color: white;
+    border: 3px solid lightblue;
+    text-align: center;
+    max-height: 0px;
+    overflow: hidden;
+    transition: 1.5s;
+}
+
+.submitPeriod{
+    margin: 0 auto;
+    margin-top: 10px;
+    width: 80px;
+    height: 40px;
+    border-radius: 25px;
+    font-size: 15px;
+    border: none;
+    background-color: lightblue;
+}
+
+.submitPeriod:hover{
+    background-color: blue;
+    transition: 1s;
+    color: white;
+}
+
+.closeButton{
+    border: none;
+    background: none;
+    font-size: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: gray;
+}
+
+.closeButton:hover{
+    color: black;
+    transition: 1s;
+}
+
+input{
+    outline: none;
+}
+
+button{
+    outline: none;
+}
+
+input[type=range]{
+    -webkit-appearance: none;
+    width: 80%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+input[type=text]{
+    border-radius: 15px 50px 30px;
+    border: 2px solid lightblue;
+    padding: 10px; 
+}
+
+.perInput{
+    width: calc(100% - 110px);;
+    height: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
