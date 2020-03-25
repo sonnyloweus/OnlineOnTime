@@ -30,7 +30,7 @@
 
             <div id="weekSchedule">
                 <div class="schedules tableTemplates" id="weekPeriods">
-                    <h3>This Weeks Schedule</h3>
+                    <h3><button id="editSchedule">✎</button> This Weeks Schedule</h3>
                     <table id="weekTable" style="width:100%" CELLSPACING=0>
                         <colgroup>
                             <col id="Mon" />
@@ -66,7 +66,7 @@
                 <p>Subject</p>
                 
                 <form id="periodForm">
-                    <input type="text" class="perInput" id="perName" maxlength="25" autocomplete="off" required>
+                    <input type="text" class="perInput" id="perName" maxlength="20" autocomplete="off" required>
                     <p>Notify: <span id="notifyTime"></span> min Before</p>
                     <input type="range" min="1" max="15" value="5" step="1" class="slider" id="alarmTime">
                     <input type="submit" class="submitPeriod" id="createPeriod" value="Create">
@@ -80,7 +80,7 @@
                 <p>Subject</p>
 
                 <form id="periodForm2">
-                    <input type="text" class="perInput" id="perName2" maxlength="25" autocomplete="off" required>
+                    <input type="text" class="perInput" id="perName2" maxlength="20" autocomplete="off" required>
                     <p>Notify: <span id="notifyTime2"></span> min Before</p>
                     <input type="range" min="1" max="15" value="5" step="1" class="slider" id="alarmTime2">
                     <input type="submit" class="submitPeriod" id="savePeriod" value="Save">
@@ -105,6 +105,34 @@
                 </tr> -->
                 
             </table>
+        </div>
+
+        <div id="editWeekSchedule">
+            <button id="backWeek">➦</button>
+            <br>
+            <h2>Week Schedule</h2>
+            <ul id="weekdayBar">
+                <li><button id="MonSch">Mon</button></li>
+                <li><button id="TuesSch">Tue</button></li>
+                <li><button id="WednesSch">Wed</button></li>
+                <li><button id="ThursSch">Thu</button></li>
+                <li><button id="FriSch">Fri</button></li>
+            </ul>
+
+            <br>
+
+            <table id="editTodayTable" style="width:100%">
+                <tr>
+                    <th>Time</th>
+                    <th colspan="3" style="text-align: left;">Period and Subject</th> 
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                
+            </table>
+            <p>* Make sure the Periods are in order by time (earliest to latest) !!</p>
+            <p>* Click the corresponding save button after editing or adding period.</p>
         </div>
 
         <button id="eachPeriodButton" > Edit Periods </button>

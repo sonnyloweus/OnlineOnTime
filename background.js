@@ -59,7 +59,7 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
         Tues: [],
         Wednes: [],
         Thurs: [],
-        Fri: [],
+        Fri: []
       }, function alarmsOut(obj) {
 
         console.log("last alarm called, making new alarms here for " + day + "day");

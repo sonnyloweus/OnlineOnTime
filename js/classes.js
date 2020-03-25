@@ -1,3 +1,6 @@
+//disable enter key
+window.addEventListener('keydown',function(e){if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){if(e.target.nodeName=='INPUT'&&e.target.type=='text'){e.preventDefault();return false;}}},true);
+
 let todayTable = document.getElementById("todayTable");
 let weekTable = document.getElementById("weekTable");
 let today = document.getElementById("today");
@@ -35,10 +38,10 @@ chrome.storage.sync.get({
     drawTodaySchedule(obj); 
 
     chrome.alarms.getAll(function(a){
-        console.log(a);
+        // console.log(a);
         outOfDate(a, obj);
         chrome.alarms.getAll(function(a){ 
-            console.log(a);
+            // console.log(a);
             for(let i = 0; i < a.length; i++){
                 let date = new Date(a[i].scheduledTime);
                 console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
@@ -88,10 +91,10 @@ function update(){
         drawTodaySchedule(obj); 
     
         chrome.alarms.getAll(function(a){
-            console.log(a);
+            // console.log(a);
             outOfDate(a, obj);
             chrome.alarms.getAll(function(a){ 
-                console.log(a);
+                // console.log(a);
                 for(let i = 0; i < a.length; i++){
                     let date = new Date(a[i].scheduledTime);
                     console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
