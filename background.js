@@ -27,7 +27,7 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
     chrome.storage.sync.set({}, function (obj) {
       let notificationOptions = {
           type: 'basic',
-          iconUrl: 'images/get_started128.png',
+          iconUrl: 'images/OnlineOnTimeIcon534.png',
           title: "Period " + alarm.name.substring(alarm.name.length -1),
           message: 'You have class soon! Wake up, dude!',
           requireInteraction: true

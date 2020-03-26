@@ -9,9 +9,13 @@ function makePeriodsArray(obj){
 
     if(periodNumbers.length == 0){
         //initialize with 7 periods
-        for(let i = 0; i < 7; i++){
+        for(let i = 0; i < 8; i++){
             periodNumbers[i] = i+1;
-            periodNames[i] = "Subject " + (i+1);
+            if(i == 7){
+                periodNames[i] = "Office Hours";
+            }else{
+                periodNames[i] = "Subject " + (i+1);
+            }
             periodLength[i] = "50";
             periodAlarms[i] = "5";
             passingLength[i] = "10";
@@ -57,6 +61,7 @@ function drawTodaySchedule(obj){
         let timeOnly = dayList[i].substring(0, dayList[i].length-3);
         let pmOrAm = dayList[i].substring(dayList[i].length-3, dayList[i].length-1);
 
+        
         let periodLength = periods[periodNum-1][2];
         let passingLength = periods[periodNum-1][4];
 
@@ -114,9 +119,30 @@ let defaultWeek = [
     ["8:15am3", "9:15am4", "10:15am5", "11:30am6", "12:30pm7"]
 ];
 
+let defaultWeekA = [
+    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"]
+]
+
+let defaultWeekB = [
+    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"]
+]
+
 function initializeDay(obj, theDay){
     let defaultNum = (theDay == "Mon" ? 0 : theDay=="Tues" ?1: theDay == "Wednes" ?2: theDay == "Thurs" ?3:4);
-    let tempList = defaultWeek[defaultNum];
+    let tempList = defaultWeekA[defaultNum];
+
+    obj.week[0] = "weekA";
+    obj.WeekA = defaultWeekA;
+    obj.WeekB= defaultWeekB;
+    // console.log(obj.WeekA);
 
     if(obj.Mon.length == 0){
         obj.Mon = tempList;
@@ -140,11 +166,17 @@ function drawWeekSchedule(obj){
     todayColumn.style.border = "3px solid lightblue";
 
     let mostPeriods = 0;
+    let tempWeek = [];
+    if(obj.week[0] == "weekA"){
+        tempWeek = defaultWeekA;
+    }else{
+        tempWeek = defaultWeekB;
+    }
     //check each day
     for(let i = 0; i < 5; i++){
         let list = (i == "0" ? obj.Mon : i=="1" ? obj.Tues: i == "2" ? obj.Wednes: i == "3" ? obj.Thurs:obj.Fri);
         if(list.length == 0){
-            mostPeriods = Math.max(defaultWeek[i].length, mostPeriods);
+            mostPeriods = Math.max(tempWeek[i].length, mostPeriods);
         }else{
             mostPeriods = Math.max(list.length, mostPeriods);
         }
@@ -463,6 +495,8 @@ let editScheduleButton = document.getElementById("editSchedule");
 let backWeek = document.getElementById("backWeek");
 let editTodayTable = document.getElementById("editTodayTable");
 
+let addPeriodButton = document.getElementById("addPeriod");
+
 let monSch = document.getElementById("MonSch")
 let tueSch = document.getElementById("TuesSch")
 let wedSch = document.getElementById("WednesSch")
@@ -689,12 +723,17 @@ function clearActive(){
 }
 
 editScheduleButton.onclick = function(){
+    clearActive();
     editWeekSchedule.style.display = "block";
     home.style.display = "none"
     eachPeriodButton.style.display = "none";
 
     monSch.style.fontWeight = 600;
     monSch.style.backgroundColor = "lightblue";
+
+    addPeriodButton.addEventListener("click", function(){
+        insertPeriodBelow(0, "Mon");
+    });
 
     editToday("Mon");
 }
@@ -704,30 +743,45 @@ monSch.onclick = function(){
     monSch.style.fontWeight = 600;
     monSch.style.backgroundColor = "lightblue";
     editToday("Mon");
+    addPeriodButton.addEventListener("click", function(){
+        insertPeriodBelow(0, "Mon");
+    });
 }
 tueSch.onclick = function(){
     clearActive();
     tueSch.style.fontWeight = 600;
     tueSch.style.backgroundColor = "lightblue";
     editToday("Tues");
+    addPeriodButton.addEventListener("click", function(){
+        insertPeriodBelow(0, "Tues");
+    });
 }
 wedSch.onclick = function(){
     clearActive();
     wedSch.style.fontWeight = 600;
     wedSch.style.backgroundColor = "lightblue";
     editToday("Wednes");
+    addPeriodButton.addEventListener("click", function(){
+        insertPeriodBelow(0, "Wednes");
+    });
 }
 thurSch.onclick = function(){
     clearActive();
     thurSch.style.fontWeight = 600;
     thurSch.style.backgroundColor = "lightblue";
     editToday("Thurs");
+    addPeriodButton.addEventListener("click", function(){
+        insertPeriodBelow(0, "Thurs");
+    });
 }
 friSch.onclick = function(){
     clearActive();
     friSch.style.fontWeight = 600;
     friSch.style.backgroundColor = "lightblue";
-    editToday("Fru");
+    editToday("Fri");
+    addPeriodButton.addEventListener("click", function(){
+        insertPeriodBelow(0, "Fri");
+    });
 }
 
 backWeek.onclick = function(){
@@ -735,5 +789,108 @@ backWeek.onclick = function(){
     editWeekSchedule.style.display = "none";
     home.style.display = "block"
     eachPeriodButton.style.display = "block";
+}
+
+let templateA = document.getElementById("templateA");
+let templateB = document.getElementById("templateB");
+
+templateA.onclick = function(){
+    chrome.storage.sync.get({
+        Mon: [],
+        Tues: [],
+        Wednes: [],
+        Thurs: [],
+        Fri: [],
+        WeekA: [],
+        WeekB: [],
+        week: [],
+        periodNumbers: [],
+        periodNames: [],
+        periodAlarms: [],
+        periodLength: [],
+        passingLength: [],
+    }, function extensionClicked(obj) {
+
+        if(obj.week[0] == "weekB"){
+            obj.week[0] = "weekA";
+            console.log("Week A click valid");
+            templateB.style.fontWeight = "initial";
+            templateA.style.fontWeight = "600";
+
+            let Bweek = Array.from(obj.WeekB);
+
+            Bweek[0] = obj.Mon;
+            Bweek[1] = obj.Tues;
+            Bweek[2] = obj.Wednes;
+            Bweek[3] = obj.Thurs;
+            Bweek[4] = obj.Fri;
+
+            obj.WeekB = Bweek;
+
+            let Aweek = Array.from(obj.WeekA);
+
+            obj.Mon = Aweek[0];
+            obj.Tues = Aweek[1];
+            obj.Wednes = Aweek[2];
+            obj.Thurs = Aweek[3];
+            obj.Fri = Aweek[4];
+
+        }
+
+        chrome.storage.sync.set(obj, function(){
+            createAlarms(obj);
+            update();
+        });
+    });
+}
+
+templateB.onclick = function(){
+    chrome.storage.sync.get({
+        Mon: [],
+        Tues: [],
+        Wednes: [],
+        Thurs: [],
+        Fri: [],
+        WeekA: [],
+        WeekB: [],
+        week: [],
+        periodNumbers: [],
+        periodNames: [],
+        periodAlarms: [],
+        periodLength: [],
+        passingLength: []
+    }, function extensionClicked(obj) {
+
+        if(obj.week[0] == "weekA"){
+            obj.week[0] = "weekB"
+            console.log("Week B click valid");
+            templateA.style.fontWeight = "100";
+            templateB.style.fontWeight = "600";
+
+            let Aweek = Array.from(obj.WeekA);
+
+            Aweek[0] = obj.Mon;
+            Aweek[1] = obj.Tues;
+            Aweek[2] = obj.Wednes;
+            Aweek[3] = obj.Thurs;
+            Aweek[4] = obj.Fri;
+
+            obj.WeekA = Aweek;
+
+            let Bweek = Array.from(obj.WeekB);
+
+            obj.Mon = Bweek[0];
+            obj.Tues = Bweek[1];
+            obj.Wednes = Bweek[2];
+            obj.Thurs = Bweek[3];
+            obj.Fri = Bweek[4];
+
+        }
+
+        chrome.storage.sync.set(obj, function(){
+            createAlarms(obj);
+            update();
+        });
+    });
 }
 

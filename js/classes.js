@@ -32,10 +32,21 @@ chrome.storage.sync.get({
     Wednes: [],
     Thurs: [],
     Fri: [],
+    WeekA: [],
+    WeekB: [],
+    week: []
 }, function extensionClicked(obj) {
-    
+
     drawWeekSchedule(obj);   
     drawTodaySchedule(obj); 
+
+    if(obj.week[0] == "weekA"){
+        templateB.style.fontWeight = "initial";
+        templateA.style.fontWeight = "600";
+    }else{
+        templateA.style.fontWeight = "100";
+        templateB.style.fontWeight = "600";
+    }
 
     chrome.alarms.getAll(function(a){
         // console.log(a);
@@ -81,6 +92,7 @@ function update(){
         Wednes: [],
         Thurs: [],
         Fri: [],
+        week: []
     }, function extensionClicked(obj) {
 
         todayTable.innerHTML = "<tr><th>Time</th><th colspan='2' style='text-align: left;'>Period</th> </tr>";
