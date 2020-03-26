@@ -519,6 +519,12 @@ function getOptions(obj, num){
     return htmlString;
 }
 
+function needToSave(num){
+    console.log("changed");
+    let needRed = document.getElementById("saveNewPeriod" + num);
+    needRed.style.border = "2px solid red";
+}
+
 function editToday(weekday){
     chrome.storage.sync.get({
         periodNumbers: [],
@@ -579,6 +585,12 @@ function editToday(weekday){
             document.getElementById("insertPeriod" + i).addEventListener("click", function(){
                 insertPeriodBelow(i, weekday);
             });
+            document.getElementById("newTime" + i).onchange = function(){
+                needToSave(i);
+            }
+            document.getElementById("setNewPeriod" + i).onchange = function(){
+                needToSave(i);
+            }
         }
 
     });
