@@ -39,7 +39,8 @@ chrome.storage.sync.get({
     Fri: [],
     WeekA: [],
     WeekB: [],
-    week: []
+    week: [],
+    addOn: []
 }, function extensionClicked(obj) {
 
     drawWeekSchedule(obj);   
