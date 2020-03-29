@@ -11,12 +11,17 @@ let dayNum = d.getDay();
 let day = daysOfWeek[d.getDay()];
 
 let currentHour = d.getHours();
+let currentMinute = d.getMinutes();
 
 if(currentHour <= 9){
     currentHour = "0" + currentHour;
 }
 
-let currentTime = "" + currentHour + ":" + (d.getMinutes()) + ":" + d.getSeconds();
+if(currentMinute <= 9){
+    currentMinute = "0" + currentMinute;
+}
+
+let currentTime = "" + currentHour + ":" + currentMinute + ":" + d.getSeconds();
 
 today.innerHTML = day + "day's";
 
@@ -55,8 +60,10 @@ chrome.storage.sync.get({
             // console.log(a);
             for(let i = 0; i < a.length; i++){
                 let date = new Date(a[i].scheduledTime);
-                console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
+                console.log(a);
+                // console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
             }
+            console.log("################");
         });
     });
 
@@ -109,11 +116,12 @@ function update(){
                 // console.log(a);
                 for(let i = 0; i < a.length; i++){
                     let date = new Date(a[i].scheduledTime);
-                    console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
+                    console.log(a);
+                    // console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
                 }
+                console.log("################");
             });
         });
-    
         chrome.storage.sync.set(obj, function(){});
     });
     

@@ -22,20 +22,24 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
 
   let tempCurrentTime = new Date(Date.now() - (5*60000));
   let alarmTime = new Date(alarm.scheduledTime);
+  let todayDay =tempCurrentTime.getDay();
 
-  if(alarmTime.getTime() > tempCurrentTime.getTime()){
-    chrome.storage.sync.set({}, function (obj) {
-      let notificationOptions = {
-          type: 'basic',
-          iconUrl: 'images/OnlineOnTimeIcon534.png',
-          title: "Period " + alarm.name.substring(alarm.name.length -1),
-          message: 'You have class soon! Wake up, dude!',
-          requireInteraction: true
-      }
-      chrome.notifications.create(alarm.name, notificationOptions);
-    });
-  }else{
-    console.log("out of date");
+  if(todayDay != 0 && todayDay != 6){
+    if(alarmTime.getTime() > tempCurrentTime.getTime()){
+
+      chrome.storage.sync.set({}, function (obj) {
+        let periodNum = (parseInt(alarm.name.substring(3), 16));
+        let notificationOptions = {
+            type: 'basic',
+            iconUrl: 'images/OnlineOnTimeIcon534.png',
+            title: "Period " + periodNum,
+            message: 'You have class soon! Wake up, dude!',
+            requireInteraction: true
+        }
+        chrome.notifications.create(alarm.name, notificationOptions);
+      });
+
+    }
   }
 
   chrome.alarms.getAll(function(a){ 
@@ -62,12 +66,12 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
         Fri: []
       }, function alarmsOut(obj) {
 
-        console.log("last alarm called, making new alarms here for " + day + "day");
+        // console.log("last alarm called, making new alarms here for " + day + "day");
         let list = (day == "Mon" ? obj.Mon : day=="Tues" ? obj.Tues: day == "Wednes" ? obj.Wednes: day == "Thurs" ? obj.Thurs:obj.Fri);
         let dayList = Array.from(list);
 
         for(let i = 0; i < dayList.length; i++){
-            let tempString = day + dayList[i].substring(dayList[i].length-1);
+            let tempString = day + parseInt(dayList[i].substring(dayList[i].length-1), 16);
             // 00:00xxx
             let hour = dayList[i].substring(0, dayList[i].length-6);
 
@@ -90,7 +94,7 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
         }
 
         chrome.alarms.getAll(function(a){ 
-          console.log(a)
+          // console.log(a)
         });
 
       });

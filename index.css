@@ -153,35 +153,35 @@ body{
 }
 
 #newPeriodSettings{
-    position: absolute;
-    top: 78px;
-    left: 50.5%;
-    transform: translate(-49.5%);
+    position: fixed;
+    top: 87px;
+    left: 49.5%;
+    transform: translate(-50.5%);
     margin: 0px;
-    width: calc(100% - 20px);
+    width: calc(100% - 70px);
     height: 234px;
     background-color: white;
-    border: 3px solid lightblue;
+    border: none;
     text-align: center;
     max-height: 0px;
     overflow: hidden;
-    transition: 1.5s;
+    transition: 1s;
 }
 
 #editPeriodSettings{
-    position: absolute;
-    top: 78px;
-    left: 50.5%;
-    transform: translate(-49.5%);
+    position: fixed;
+    top: 87px;
+    left: 49.5%;
+    transform: translate(-50.5%);
     margin: 0px;
-    width: calc(100% - 20px);
+    width: calc(100% - 70px);
     height: 234px;
     background-color: white;
-    border: 3px solid lightblue;
+    border: none;
     text-align: center;
     max-height: 0px;
     overflow: hidden;
-    transition: 1.5s;
+    transition: 1s;
 }
 
 .submitPeriod{
@@ -250,6 +250,7 @@ input[type=text]{
 }
 
 #editSchedule{
+    margin-left: -20px;
     border-radius: 10px;
     font-size: 21px;
     padding: 3px;
@@ -260,6 +261,23 @@ input[type=text]{
 }
 
 #editSchedule:hover{
+    transition: 0.5s;
+    background: lightblue;
+}
+
+#sync {
+    float: left;
+    margin-left: 10px;
+    border-radius: 10px;
+    font-size: 21px;
+    padding: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+    border: none;
+    background: none;
+}
+
+#sync:hover{
     transition: 0.5s;
     background: lightblue;
 }
@@ -499,3 +517,5 @@ input[type=time]::-webkit-clear-button {
     color: white;
     transition: 1s;
 }
+
+

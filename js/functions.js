@@ -9,14 +9,19 @@ function makePeriodsArray(obj){
 
     if(periodNumbers.length == 0){
         //initialize with 7 periods
-        for(let i = 0; i < 8; i++){
-            periodNumbers[i] = i+1;
+        for(let i = 0; i < 9; i++){
+            periodNumbers[i] = (i+1).toString(16);
             if(i == 7){
                 periodNames[i] = "Office Hours";
+                periodLength[i] = "60";
+            }else if(i==8){
+                periodNames[i] = "Lunch 🍕";
+                periodLength[i] = "25";
             }else{
                 periodNames[i] = "Subject " + (i+1);
+                periodLength[i] = "60";
             }
-            periodLength[i] = "50";
+
             periodAlarms[i] = "5";
             passingLength[i] = "10";
         }
@@ -56,7 +61,7 @@ function drawTodaySchedule(obj){
     let previous = false;
     // each period has: period number, period name, length, alarmTime, passingLength
     for(let i = 0; i < dayList.length; i++ ){
-        let periodNum = dayList[i].substring(dayList[i].length-1);
+        let periodNum = parseInt(dayList[i].substring(dayList[i].length-1), 16);
         let periodTime = dayList[i].substring(0, dayList[i].length-1);
         let timeOnly = dayList[i].substring(0, dayList[i].length-3);
         let pmOrAm = dayList[i].substring(dayList[i].length-3, dayList[i].length-1);
@@ -64,6 +69,7 @@ function drawTodaySchedule(obj){
         
         let periodLength = periods[periodNum-1][2];
         let passingLength = periods[periodNum-1][4];
+        // console.log(periods);
 
         let e = new Date(d.getTime() - ((parseInt(periodLength) + parseInt(passingLength))*60000));
 
@@ -87,11 +93,15 @@ function drawTodaySchedule(obj){
         }
         e = (eHour + ":" + eMin + ":" + e.getSeconds());
 
+        // currentTime = current Time
+        // e = currentTime - (the period's length plus it's passing length)
+        // tempTime = the period's time
+
         if( currentTime >= tempTime && e <=  tempTime){
-            // console.log(currentTime + " / " + tempTime + " / " + e);
+            console.log(currentTime + " / " + tempTime + " / " + e);
             todayTable.innerHTML = todayTable.innerHTML + 
             //start time, period num, period name
-                "<tr style='background-color: lightblue'> <td>" + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
+                "<tr style='background-color: lightblue'> <td> 🔔 " + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
             ;
             previous = true;
         }else if(previous){
@@ -120,19 +130,19 @@ let defaultWeek = [
 ];
 
 let defaultWeekA = [
-    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
-    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
-    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"]
+    ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"]
 ]
 
 let defaultWeekB = [
-    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
-    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"],
-    ["8:15am8", "9:30am1", "10:45am2", "12:30am3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6", "12:30am7"]
+    ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
+    ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "2:45pm4"],
+    ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"]
 ]
 
 function initializeDay(obj, theDay){
@@ -204,7 +214,7 @@ function drawWeekSchedule(obj){
 
             if(!(dayList.length - 1 < i)){
                 htmlString = htmlString +
-                    "<td>"+ dayList[i].substring(0, dayList[i].length - 1) + " " + dayList[i].substring(dayList[i].length - 1) +"</td>"
+                    "<td>"+ dayList[i].substring(0, dayList[i].length - 1) + " " + parseInt(dayList[i].substring(dayList[i].length - 1), 16) +"</td>"
                 ;
             }else{
                 htmlString = htmlString + "<td></td>";
@@ -238,7 +248,6 @@ function outOfDate(listAlarms, obj){
         // console.log(tempCurrentTime.getHours() + " . " + tempCurrentTime.getMinutes());
 
         // if(tempCurrentTime.getTime() < alarmTime.getTime()){
-            chrome.alarms.clearAll();
             listAlarms = []
     
             createAlarms(obj);
@@ -248,11 +257,12 @@ function outOfDate(listAlarms, obj){
 
 function createAlarms(obj){
     // console.log("created Alarms");
+    chrome.alarms.clearAll();
 
     let list = (day == "Mon" ? obj.Mon : day=="Tues" ? obj.Tues: day == "Wednes" ? obj.Wednes: day == "Thurs" ? obj.Thurs:obj.Fri);
     let dayList = Array.from(list);
     for(let i = 0; i < dayList.length; i++){
-        let tempString = day + dayList[i].substring(dayList[i].length-1);
+        let tempString = day + parseInt(dayList[i].substring(dayList[i].length-1), 16);
         // 00:00xxx
         let hour = dayList[i].substring(0, dayList[i].length-6);
 
@@ -262,7 +272,7 @@ function createAlarms(obj){
             hour = parseInt(hour) + 12;
         }
 
-        let notify =  parseInt( obj.periodAlarms[ parseInt(dayList[i].substring(dayList[i].length-1 )-1)]  );
+        let notify =  parseInt( obj.periodAlarms[ parseInt(dayList[i].substring(dayList[i].length-1), 16) - 1]  );
         let minute = parseInt((dayList[i].substring(dayList[i].length-5, dayList[i].length-3))) ;
 
         // console.log( d.getFullYear() + ", " + d.getMonth() + ", " + d.getDate() + ", " + hour + ", " + minute + ", " + "0" + ", " +  "0" );
@@ -300,6 +310,7 @@ let closePeriodSettings2 = document.getElementById("closePeriodSettings2");
 function saveForm(){
     event.preventDefault(); 
     editPeriodSettings.style.maxHeight = "0px";
+    editPeriodSettings.style.border = "none";
 
     chrome.storage.sync.get({
         periodNumbers: [],
@@ -319,8 +330,10 @@ function saveForm(){
         let periodAlarms = Array.from(obj.periodAlarms);
         let periodLength = Array.from(obj.periodLength);
         let passingLength = Array.from(obj.passingLength);
+        let num = parseInt(perNum2.innerHTML);
 
-        let indexNum = periodNumbers.indexOf(parseInt(perNum2.innerHTML));
+        let indexNum = periodNumbers.indexOf( num.toString(16) );
+        // console.log("saving the periond " + indexNum + "from" + (num.toString(16)) );
 
         // console.log(indexNum);
         // console.log(periodNumbers);
@@ -328,10 +341,13 @@ function saveForm(){
         perName2 = document.getElementById("perName2");
         alarmTime2 = document.getElementById("alarmTime2");
 
-        periodNames[indexNum] = (perName2.value);
+        periodNames[indexNum] = (perName2.value)
         periodAlarms[indexNum] = (alarmTime2.value);
         periodLength[indexNum] = ("50");
         passingLength[indexNum] = ("10");
+
+        // console.log(periodNumbers);
+        // console.log(periodNames);
 
         obj.periodNames = periodNames;
         obj.periodNumbers = periodNumbers;
@@ -350,6 +366,7 @@ function saveForm(){
 
 function editPer(num){
     editPeriodSettings.style.maxHeight = "234px";
+    editPeriodSettings.style.border = "3px solid lightblue";
     chrome.storage.sync.get({
         periodNumbers: [],
         periodNames: [],
@@ -360,7 +377,8 @@ function editPer(num){
         // console.log(num);
         perNum2.innerText = "" + num;
         periodNumbers = Array.from(obj.periodNumbers);
-        let indexNum = periodNumbers.indexOf(num);
+        let indexNum = periodNumbers.indexOf(num.toString(16));
+        // console.log(indexNum + "from" + num);
         alarmTime2.value = obj.periodAlarms[indexNum];
         notifyTime2.innerHTML = alarmTime2.value;
         perName2.value = obj.periodNames[indexNum];
@@ -380,9 +398,9 @@ function drawPeriods(){
         periodTable.innerHTML = "<tr> <th>Period</th> <th>Subject</th> <th>Alarm</th> <th></th> </tr>";
         for(let i = 0; i < periodNames.length; i++){
             periodTable.innerHTML = periodTable.innerHTML + 
-                "<tr> <td>" + obj.periodNumbers[i] + "</td> <td>" + obj.periodNames[i] + "</td> <td> " + obj.periodAlarms[i] + " min before </td> <td><button class='edit' id=" + obj.periodNumbers[i] + ">✎</button></td> </tr>"
+                "<tr> <td>" + parseInt(obj.periodNumbers[i], 16) + "</td> <td>" + obj.periodNames[i] + "</td> <td> " + obj.periodAlarms[i] + " min before </td> <td><button class='edit' id=" + parseInt(obj.periodNumbers[i], 16) + ">✎</button></td> </tr>"
             ;
-            tempButtons.push(obj.periodNumbers[i]);
+            tempButtons.push(parseInt(obj.periodNumbers[i], 16));
             // console.log(tempButton);
         }
 
@@ -431,11 +449,15 @@ newPeriod.onclick = function(){
     chrome.storage.sync.get({
         periodNumbers: [],
     }, function (obj) {
-        if(obj.periodNumbers.length >= 9){
+        if(obj.periodNumbers.length >= 15){
             alert("You have the maximum amount of periods");
         }else{
+            newPeriodSettings.style.border = "3px solid lightblue";
             newPeriodSettings.style.maxHeight = "234px";
             perNum.innerHTML = obj.periodNumbers.length + 1;
+            perName.value = "";
+            alarmTime.value = 5;
+            notifyTime.innerHTML = alarmTime.value;
         }
     });
 }
@@ -443,6 +465,7 @@ newPeriod.onclick = function(){
 function createForm(event) { 
     event.preventDefault(); 
     newPeriodSettings.style.maxHeight = "0px";
+    newPeriodSettings.style.border = "none";
 
     chrome.storage.sync.get({
         periodNumbers: [],
@@ -462,7 +485,7 @@ function createForm(event) {
         let alarmTime = document.getElementById("alarmTime");
 
         periodNames.push(perName.value);
-        periodNumbers.push(parseInt(perNum.innerHTML));
+        periodNumbers.push(parseInt(perNum.innerHTML).toString(16));
         periodAlarms.push(alarmTime.value);
         periodLength.push("50");
         passingLength.push("10");
@@ -474,7 +497,7 @@ function createForm(event) {
         obj.passingLength = passingLength;
 
         chrome.storage.sync.set(obj);
-
+        perName.innerHTML = "";
         drawPeriods();
 
     });
@@ -483,10 +506,12 @@ function createForm(event) {
 periodForm.addEventListener('submit', createForm);
 
 closePeriodSettings.onclick = function(){
+    newPeriodSettings.style.border = "none";
     newPeriodSettings.style.maxHeight = "0px";
 }
 
 closePeriodSettings2.onclick = function(){
+    editPeriodSettings.style.border = "none";
     editPeriodSettings.style.maxHeight = "0px";
 }
 
@@ -508,8 +533,8 @@ function getOptions(obj, num){
     let templateFront = "<option value=";
     let templateBack = "</option>"
     for(let i = 0; i < obj.periodNumbers.length; i++){
-        let tempValue = obj.periodNumbers[i];
-        let tempText = obj.periodNumbers[i] + "  " + obj.periodNames[i];
+        let tempValue = parseInt(obj.periodNumbers[i], 16);
+        let tempText = parseInt(obj.periodNumbers[i], 16) + "  " + obj.periodNames[i];
         if(tempValue == num){
             htmlString = htmlString + templateFront + tempValue + " selected >" + tempText + templateBack;
         }else{
@@ -520,7 +545,7 @@ function getOptions(obj, num){
 }
 
 function needToSave(num){
-    console.log("changed");
+    // console.log("changed");
     let needRed = document.getElementById("saveNewPeriod" + num);
     needRed.style.border = "2px solid red";
 }
@@ -549,7 +574,7 @@ function editToday(weekday){
         let previous = false;
         // each period has: period number, period name, length, alarmTime, passingLength
         for(let i = 0; i < dayList.length; i++ ){
-            let periodNum = dayList[i].substring(dayList[i].length-1);
+            let periodNum = parseInt(dayList[i].substring(dayList[i].length-1), 16);
             let periodTime = dayList[i].substring(0, dayList[i].length-1);
             let timeOnly = dayList[i].substring(0, dayList[i].length-3);
             let pmOrAm = dayList[i].substring(dayList[i].length-3, dayList[i].length-1);
@@ -609,7 +634,8 @@ function insertPeriodBelow(num, weekday){
 
 
         let newTime = document.getElementById("newTime" + num).value;
-        let newPeriod = document.getElementById("setNewPeriod" + num).value;
+        let tempPerNum = parseInt(document.getElementById("setNewPeriod" + num).value);
+        let newPeriod = tempPerNum.toString(16);
         let amOrpm = "am";
         if(newTime > "12:59"){
             newTime = (parseInt(newTime.substring(0, 2))-12) + newTime.substring(2);
@@ -620,9 +646,11 @@ function insertPeriodBelow(num, weekday){
             newTime = newTime.substring(1);
         }
 
+        console.log(newTime);
+
         dayList.splice(num+1, 0, ("" + newTime + amOrpm + newPeriod));
 
-        // console.log(dayList);
+        console.log(dayList);
 
         if(weekday == "Mon"){
             obj.Mon = dayList;
@@ -649,11 +677,22 @@ function saveNewPeriod(num, weekday){
         Wednes: [],
         Thurs: [],
         Fri: [],
+        WeekA: [],
+        WeekB: [],
+        week: [],
+        periodNumbers: [],
+        periodNames: [],
+        periodAlarms: [],
+        periodLength: [],
+        passingLength: []
     }, function (obj) {
         let list = (weekday == "Mon" ? obj.Mon : weekday=="Tues" ? obj.Tues: weekday == "Wednes" ? obj.Wednes: weekday == "Thurs" ? obj.Thurs:obj.Fri);
         let dayList = Array.from(list);
+
         let newTime = document.getElementById("newTime" + num).value;
-        let newPeriod = document.getElementById("setNewPeriod" + num).value;
+
+        let tempPerNum = parseInt(document.getElementById("setNewPeriod" + num).value);
+        let newPeriod = (tempPerNum.toString(16));
         let amOrpm = "am";
         if(newTime > "12:59"){
             newTime = (parseInt(newTime.substring(0, 2))-12) + newTime.substring(2);
@@ -666,7 +705,7 @@ function saveNewPeriod(num, weekday){
 
         dayList[num] = "" + newTime + amOrpm + newPeriod;
 
-        // console.log(dayList);
+        console.log(dayList);
 
         if(weekday == "Mon"){
             obj.Mon = dayList;
@@ -682,6 +721,7 @@ function saveNewPeriod(num, weekday){
         
         chrome.storage.sync.set(obj, function(){
             // console.log(obj.Mon);
+            createAlarms(obj);
             editToday(weekday);
         })
     });
@@ -798,6 +838,23 @@ friSch.onclick = function(){
 
 backWeek.onclick = function(){
     update();
+    chrome.storage.sync.get({
+        Mon: [],
+        Tues: [],
+        Wednes: [],
+        Thurs: [],
+        Fri: [],
+        WeekA: [],
+        WeekB: [],
+        week: [],
+        periodNumbers: [],
+        periodNames: [],
+        periodAlarms: [],
+        periodLength: [],
+        passingLength: [],
+    }, function extensionClicked(obj) {
+        createAlarms(obj);
+    });
     editWeekSchedule.style.display = "none";
     home.style.display = "block"
     eachPeriodButton.style.display = "block";
@@ -825,7 +882,7 @@ templateA.onclick = function(){
 
         if(obj.week[0] == "weekB"){
             obj.week[0] = "weekA";
-            console.log("Week A click valid");
+            // console.log("Week A click valid");
             templateB.style.fontWeight = "initial";
             templateA.style.fontWeight = "600";
 
@@ -875,7 +932,7 @@ templateB.onclick = function(){
 
         if(obj.week[0] == "weekA"){
             obj.week[0] = "weekB"
-            console.log("Week B click valid");
+            // console.log("Week B click valid");
             templateA.style.fontWeight = "100";
             templateB.style.fontWeight = "600";
 
