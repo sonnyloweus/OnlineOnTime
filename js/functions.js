@@ -12,10 +12,10 @@ function makePeriodsArray(obj){
         for(let i = 0; i < 9; i++){
             periodNumbers[i] = (i+1).toString(16);
             if(i == 7){
-                periodNames[i] = "Office Hours";
+                periodNames[i] = "📚📝";
                 periodLength[i] = "60";
             }else if(i==8){
-                periodNames[i] = "Lunch 🍕";
+                periodNames[i] = "🍴🍕🍪";
                 periodLength[i] = "25";
             }else{
                 periodNames[i] = "Subject " + (i+1);
@@ -98,7 +98,7 @@ function drawTodaySchedule(obj){
         // tempTime = the period's time
 
         if( currentTime >= tempTime && e <=  tempTime){
-            console.log(currentTime + " / " + tempTime + " / " + e);
+            // console.log(currentTime + " / " + tempTime + " / " + e);
             todayTable.innerHTML = todayTable.innerHTML + 
             //start time, period num, period name
                 "<tr style='background-color: lightblue'> <td> 🔔 " + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
@@ -129,42 +129,65 @@ let defaultWeek = [
     ["8:15am3", "9:15am4", "10:15am5", "11:30am6", "12:30pm7"]
 ];
 
-let defaultWeekA = [
-    ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30pm3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30pm7"],
-    ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30pm3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30pm7"],
-    ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30pm3", "1:45pm4"]
-]
+function initializeDay(obj){
 
-let defaultWeekB = [
-    ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30pm7"],
-    ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30pm3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30pm7"],
-    ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30pm3", "1:45pm4"],
-    ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30pm7"]
-]
+    chrome.alarms.getAll(function(a){ 
+        console.log(a);
+    });
 
-function initializeDay(obj, theDay){
-    let defaultNum = (theDay == "Mon" ? 0 : theDay=="Tues" ?1: theDay == "Wednes" ?2: theDay == "Thurs" ?3:4);
-    let tempList = defaultWeekA[defaultNum];
+    // *******************
+    for(let i = 1; i < 6; i++){
+        let tempList = obj.calendar[i];
+        
+        tempList = tempList.concat(obj.addOn[i-1]);
 
-    obj.week[0] = "weekA";
-    obj.WeekA = defaultWeekA;
-    obj.WeekB= defaultWeekB;
-    // console.log(obj.WeekA);
+        // console.log(tempList);
 
-    if(obj.Mon.length == 0){
-        obj.Mon = tempList;
-    }else if(obj.Tues.length == 0){
-        obj.Tues = tempList;
-    }else if(obj.Wednes.length == 0){
-        obj.Wednes = tempList;
-    }else if(obj.Thurs.length == 0){
-        obj.Thurs = tempList;
-    }else {
-        obj.Fri = tempList;
+        tempList.sort(function(a, b){
+            let tempHour = a.substring(a.length-3, a.length-1) == "am" ? 
+                parseInt(a.substring(0, a.length-5)) : 
+                parseInt(a.substring(0, a.length-5)) != 12 ?
+                (parseInt(a.substring(0, a.length-5)) + 12) :
+                parseInt(a.substring(0, a.length-5));
+            let hour = tempHour;
+            if(tempHour <= 9){
+                hour = "0" + tempHour;
+            }
+            let tempa = new Date(2020, 1, 1, hour, parseInt(a.substring(a.length-5, a.length-3)),0, 0 );
+
+
+            tempHour = b.substring(b.length-3, b.length-1) == "am" ? 
+                parseInt(b.substring(0, b.length-5)) : 
+                parseInt(b.substring(0, b.length-5)) != 12 ?
+                (parseInt(b.substring(0, b.length-5)) + 12):
+                parseInt(b.substring(0, b.length-5));
+            hour = tempHour;
+            if(tempHour <= 9){
+                hour = "0" + tempHour;
+            }
+            let tempb = new Date(2020, 1, 1, hour, parseInt(b.substring(b.length-5, b.length-3)),0, 0 );
+                
+            return tempa - tempb.getTime(); 
+        })
+
+        // console.log(obj.addOn);
+        // console.log(obj.calendar);
+        // console.log(tempList);
+    
+
+        if(i == 1){
+            obj.Mon = tempList;
+        }else if(i == 2){
+            obj.Tues = tempList;
+        }else if(i == 3){
+            obj.Wednes = tempList;
+        }else if(i == 4){
+            obj.Thurs = tempList;
+        }else {
+            obj.Fri = tempList;
+        }
     }
+    
     chrome.storage.sync.set(obj);
 }
 
@@ -176,12 +199,7 @@ function drawWeekSchedule(obj){
     todayColumn.style.border = "3px solid lightblue";
 
     let mostPeriods = 0;
-    let tempWeek = [];
-    if(obj.week[0] == "weekA"){
-        tempWeek = defaultWeekA;
-    }else{
-        tempWeek = defaultWeekB;
-    }
+    let tempWeek = obj.calendar;
     //check each day
     for(let i = 0; i < 5; i++){
         let list = (i == "0" ? obj.Mon : i=="1" ? obj.Tues: i == "2" ? obj.Wednes: i == "3" ? obj.Thurs:obj.Fri);
@@ -206,12 +224,6 @@ function drawWeekSchedule(obj){
             let list = (theDay == "Mon" ? obj.Mon : theDay=="Tues" ? obj.Tues: theDay == "Wednes" ? obj.Wednes: theDay == "Thurs" ? obj.Thurs:obj.Fri);
             let dayList = Array.from(list);
 
-            if(dayList.length == 0){
-                initializeDay(obj, theDay);
-                list = (theDay == "Mon" ? obj.Mon : theDay=="Tues" ? obj.Tues: theDay == "Wednes" ? obj.Wednes: theDay == "Thurs" ? obj.Thurs:obj.Fri);
-                dayList = Array.from(list);
-            }
-
             if(!(dayList.length - 1 < i)){
                 htmlString = htmlString +
                     "<td>"+ dayList[i].substring(0, dayList[i].length - 1) + " " + parseInt(dayList[i].substring(dayList[i].length - 1), 16) +"</td>"
@@ -227,8 +239,7 @@ function drawWeekSchedule(obj){
 }
 
 function outOfDate(listAlarms, obj){
-
-    if(listAlarms.length == 0){
+    if(listAlarms.length == 1){
         listAlarms = []
         createAlarms(obj);
     }
@@ -241,7 +252,7 @@ function createAlarms(obj){
     let list = (day == "Mon" ? obj.Mon : day=="Tues" ? obj.Tues: day == "Wednes" ? obj.Wednes: day == "Thurs" ? obj.Thurs:obj.Fri);
     let dayList = Array.from(list);
     for(let i = 0; i < dayList.length; i++){
-        let tempString = day + parseInt(dayList[i].substring(dayList[i].length-1), 16);
+        let tempString = i + day + dayList[i].substring(dayList[i].length-1);
         // 00:00xxx
         let hour = dayList[i].substring(0, dayList[i].length-6);
 
@@ -262,4 +273,25 @@ function createAlarms(obj){
             when: alarmTime.getTime(),
         });
     }
+
+    let n = new Date();
+    let nNum = n.getDay();
+
+    //how many days the next saturday is away
+    let saturdayAhead = 6 - nNum;
+    if(saturdayAhead == 0){
+      saturdayAhead = 7;
+    }
+
+    n.setDate(n.getDate() + saturdayAhead); 
+    n.setHours(0);
+    n.setMinutes(01);
+
+    // console.log(n.getMonth() + "/" + n.getDate());
+    // console.log(n.getHours() + ":" + n.getMinutes());
+
+    chrome.alarms.create("Update", {
+      when: n.getTime(),
+    });
+    
 }

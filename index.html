@@ -4,7 +4,10 @@
     <head>
         <meta charset="utf-8">
         <title>My Game</title>
+        <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     </head>
+    
     <body>
         <div id="home">
             <div id="todaySchedule">
@@ -31,11 +34,10 @@
             <div id="weekSchedule">
                 <div class="schedules tableTemplates" id="weekPeriods">
                     <h3>
-                        <!-- <button id="sync" title="Sync">📡</button> -->
-                        <button id="editSchedule">✎</button>
+                        <button id="calendarButton" title="calendar">📅</button>
+                        <button title="Edit Schedule" id="editSchedule">✎</button>
                          This Weeks Schedule 
-                        <button class="templates" id="templateA">Week A</button> <br>
-                        <button class="templates" id="templateB">Week B</button>
+                        
                     </h3>
                     <table id="weekTable" style="width:100%" CELLSPACING=0>
                         <colgroup>
@@ -92,7 +94,7 @@
                     <input type="submit" class="submitPeriod" id="savePeriod" value="Save">
                 </form>
 
-                <button class="closeButton" id="closePeriodSettings2">X</button>
+                <button title="close window" class="closeButton" id="closePeriodSettings2">X</button>
             </div>
 
 
@@ -115,7 +117,7 @@
         </div>
 
         <div id="editWeekSchedule">
-            <button id="backWeek">➦</button>
+            <button id="backWeek" title="back home">➦</button>
             <br>
             <h2>Week Schedule</h2>
             <ul id="weekdayBar">
@@ -125,8 +127,7 @@
                 <li><button id="ThursSch">Thu</button></li>
                 <li><button id="FriSch">Fri</button></li>
             </ul>
-
-            <br>
+            <p style="text-align: center;">*Hover over buttons to see what they do</p>
 
             <table id="editTodayTable" style="width:100%">
                 <tr>
@@ -138,20 +139,32 @@
                 </tr>
                 
             </table>
-            <button id="addPeriod" title="Add period to top">↥</button>
-            <p>* Make sure the Periods are in order by time (earliest to latest) !!</p>
+            <button id="addPeriod" title="Add period to top">+</button>
             <p>* Click the corresponding save button then the back button to confirm</p>
         </div>
 
-        <button id="eachPeriodButton" > Edit Periods </button>
+        <button id="eachPeriodButton" > Customize Periods </button>
+
+
+        <div id="calendarPage">
+            <button id="backCalendar" title="back home">➦</button>
+            <div class="datepicker" id="datepicker">
+                <div class="datepicker-header" id="datepickerHeader">
+                    <div id="vertically"></div>
+                </div>
+            </div>
+            <p>*Click on a day to see it's schedule</p>
+        </div>
+          
 
     </body>
+
     <link href="index.css" rel="stylesheet">
+    <link href="calendar.css" rel="stylesheet">
     <script src="js/functions.js"></script>
     <script src="js/editWeek.js"></script>
     <script src="js/editPeriods.js"></script>
-    <script src="js/templates.js"></script>
-    <script src="js/sync.js"></script>
+    <script src="js/calendar.js"></script>
     <script src="js/main.js"></script>
 
 </html>

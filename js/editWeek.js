@@ -12,6 +12,44 @@ let wedSch = document.getElementById("WednesSch")
 let thurSch = document.getElementById("ThursSch")
 let friSch = document.getElementById("FriSch")
 
+function setToMonday( date ) {
+    let tempDay = date.getDay() || 7;  
+    if( tempDay !== 1 ) 
+        date.setHours(-24 * (tempDay - 1)); 
+    return (date.getMonth()+1) + "/" + date.getDate();
+}
+
+function addOnPeriods(time, meridiem, num, weekday){
+
+    chrome.storage.sync.get({
+        periodNumbers: [],
+        periodNames: [],
+        periodAlarms: [],
+        periodLength: [],
+        passingLength: [],
+        Mon: [],
+        Tues: [],
+        Wednes: [],
+        Thurs: [],
+        Fri: [],
+        addOn: [],
+        calendar: []
+    }, function extensionClicked(obj) {
+        let defaultNum = (weekday == "Mon" ? 0 : weekday=="Tues" ?1: weekday == "Wednes" ?2: weekday == "Thurs" ?3:4);
+        let addSchedule = "" + time + meridiem + num;
+        let tempAddOn = obj.addOn;
+        tempAddOn[defaultNum].push(addSchedule);
+        obj.addOn = tempAddOn;
+
+        chrome.storage.sync.set(obj, function(){
+            console.log(obj.addOn);
+            initializeDay(obj);
+        });
+    });
+
+}
+
+
 function getOptions(obj, num){
     let htmlString = "";
     let templateFront = "<option value=";
@@ -46,13 +84,14 @@ function editToday(weekday){
         Wednes: [],
         Thurs: [],
         Fri: [],
+        addOn: [],
+        calendar: []
     }, function (obj) {
         // console.log(obj.Mon);
 
         editTodayTable.innerHTML = "<table id='editTodayTable' style='width:100%'><tr><th>Time</th><th colspan='3' style='text-align: left;'>Period and Subject</th> <th></th> <th></th> <th></th> </tr></table>"
 
         let periods = makePeriodsArray(obj);
-
         let list = (weekday == "Mon" ? obj.Mon : weekday=="Tues" ? obj.Tues: weekday == "Wednes" ? obj.Wednes: weekday == "Thurs" ? obj.Thurs:obj.Fri);
         let dayList = Array.from(list);
         let previous = false;
@@ -78,8 +117,8 @@ function editToday(weekday){
                 + " <td><input id=" + "newTime" + i + " type='time'value=" + tempTime  + "> </td> " 
                 + " <td> <select id=" + "setNewPeriod" + i + " >" + getOptions(obj, periodNum)  + "</select></td> " 
                 + " <td><button title='Delete Period' class='deletePeriod' id=" + "trashPeriod" + i + ">✗</button></td>" 
-                + " <td><button title='Save Changes' class='savePeriod' id=" + "saveNewPeriod" + i + ">📥</button></td>"
-                + " <td><button title='Insert Period Below' class='insertPeriod' id=" + "insertPeriod" + i + ">↧</button></td>" + 
+                + " <td><button title='Save Changes' class='savePeriod' id=" + "saveNewPeriod" + i + ">✔</button></td>"
+                + " <td><button title='Insert Period Below' class='insertPeriod' id=" + "insertPeriod" + i + ">+</button></td>" + 
                 "</tr>"
             ;
         }
@@ -101,6 +140,10 @@ function editToday(weekday){
                 needToSave(i);
             }
         }
+        chrome.storage.sync.set(obj, function(){
+            createAlarms(obj);
+            update();
+        })
     });
 }
 
@@ -115,13 +158,16 @@ function insertPeriodBelow(num, weekday){
         let list = (weekday == "Mon" ? obj.Mon : weekday=="Tues" ? obj.Tues: weekday == "Wednes" ? obj.Wednes: weekday == "Thurs" ? obj.Thurs:obj.Fri);
         let dayList = Array.from(list);
 
-
         let newTime = document.getElementById("newTime" + num).value;
         let tempPerNum = parseInt(document.getElementById("setNewPeriod" + num).value);
         let newPeriod = tempPerNum.toString(16);
         let amOrpm = "am";
-        if(newTime > "12:59"){
+        if(newTime >= "13:00"){
             newTime = (parseInt(newTime.substring(0, 2))-12) + newTime.substring(2);
+            amOrpm = "pm";
+        }
+        
+        if(newTime >= "12:00"){
             amOrpm = "pm";
         }
 
@@ -129,11 +175,11 @@ function insertPeriodBelow(num, weekday){
             newTime = newTime.substring(1);
         }
 
-        console.log(newTime);
+        // console.log(newTime);
 
         dayList.splice(num+1, 0, ("" + newTime + amOrpm + newPeriod));
 
-        console.log(dayList);
+        // console.log(dayList);
 
         if(weekday == "Mon"){
             obj.Mon = dayList;
@@ -148,6 +194,7 @@ function insertPeriodBelow(num, weekday){
         }
         chrome.storage.sync.set(obj, function(){
             // console.log(obj.Mon);
+            addOnPeriods(newTime, amOrpm, newPeriod, weekday)
             editToday(weekday);
         })
     });
@@ -160,25 +207,29 @@ function saveNewPeriod(num, weekday){
         Wednes: [],
         Thurs: [],
         Fri: [],
-        WeekA: [],
-        WeekB: [],
-        week: [],
         periodNumbers: [],
         periodNames: [],
         periodAlarms: [],
         periodLength: [],
-        passingLength: []
+        passingLength: [],
+        addOn: [],
+        calendar: []
     }, function (obj) {
         let list = (weekday == "Mon" ? obj.Mon : weekday=="Tues" ? obj.Tues: weekday == "Wednes" ? obj.Wednes: weekday == "Thurs" ? obj.Thurs:obj.Fri);
         let dayList = Array.from(list);
 
         let newTime = document.getElementById("newTime" + num).value;
-
         let tempPerNum = parseInt(document.getElementById("setNewPeriod" + num).value);
         let newPeriod = (tempPerNum.toString(16));
         let amOrpm = "am";
-        if(newTime > "12:59"){
+
+        if(newTime >= "13:00"){
+            console.log(newTime);
             newTime = (parseInt(newTime.substring(0, 2))-12) + newTime.substring(2);
+            amOrpm = "pm";
+        }
+        if(newTime >= "12:00"){
+            console.log(newTime);
             amOrpm = "pm";
         }
 
@@ -186,9 +237,23 @@ function saveNewPeriod(num, weekday){
             newTime = newTime.substring(1);
         }
 
+        let defaultNum = (weekday == "Mon" ? 0 : weekday=="Tues" ?1: weekday == "Wednes" ?2: weekday == "Thurs" ?3:4);
+
+        let tempAddOn = obj.addOn;
+        let tempIndex = tempAddOn[defaultNum].indexOf(dayList[num] );
+        // console.log(dayList[num]);
+        // console.log(tempIndex);
+        if(tempIndex != -1){
+            tempAddOn[defaultNum].splice(tempIndex, 1);
+        }else{
+            let calendarIndex = obj.calendar[defaultNum+1].indexOf(dayList[num] );
+            obj.calendar[defaultNum+1][calendarIndex] = "" + newTime + amOrpm + newPeriod;
+        }
+        obj.addOn = tempAddOn;
+        
         dayList[num] = "" + newTime + amOrpm + newPeriod;
 
-        console.log(dayList);
+        // console.log(dayList);
 
         if(weekday == "Mon"){
             obj.Mon = dayList;
@@ -204,6 +269,9 @@ function saveNewPeriod(num, weekday){
         
         chrome.storage.sync.set(obj, function(){
             // console.log(obj.Mon);
+            if(tempIndex != -1){
+                addOnPeriods(newTime, amOrpm, newPeriod, weekday)
+            }
             createAlarms(obj);
             editToday(weekday);
         })
@@ -218,9 +286,25 @@ function deletePeriod(num, weekday){
         Wednes: [],
         Thurs: [],
         Fri: [],
+        addOn: [],
+        calendar: []
     }, function (obj) {
+        let defaultNum = (weekday == "Mon" ? 0 : weekday=="Tues" ?1: weekday == "Wednes" ?2: weekday == "Thurs" ?3:4);
         let list = (weekday == "Mon" ? obj.Mon : weekday=="Tues" ? obj.Tues: weekday == "Wednes" ? obj.Wednes: weekday == "Thurs" ? obj.Thurs:obj.Fri);
         let dayList = Array.from(list);
+
+
+        let tempAddOn = obj.addOn;
+        let tempIndex = tempAddOn[defaultNum].indexOf(dayList[num]);
+        if(tempIndex != -1){
+            tempAddOn[defaultNum].splice(tempIndex, 1);
+        }else{
+            let calendarIndex = obj.calendar[defaultNum+1].indexOf(dayList[num]);
+            console.log(dayList[num]);
+            obj.calendar[defaultNum+1].splice(calendarIndex,1);
+        }
+        obj.addOn = tempAddOn;
+
         dayList.splice(num, 1);
 
         // console.log(dayList);
@@ -327,9 +411,6 @@ backWeek.onclick = function(){
         Wednes: [],
         Thurs: [],
         Fri: [],
-        WeekA: [],
-        WeekB: [],
-        week: [],
         periodNumbers: [],
         periodNames: [],
         periodAlarms: [],

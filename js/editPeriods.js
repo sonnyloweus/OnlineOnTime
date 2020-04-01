@@ -98,7 +98,7 @@ function drawPeriods(){
         periodTable.innerHTML = "<tr> <th>Period</th> <th>Subject</th> <th>Alarm</th> <th></th> </tr>";
         for(let i = 0; i < periodNames.length; i++){
             periodTable.innerHTML = periodTable.innerHTML + 
-                "<tr> <td>" + parseInt(obj.periodNumbers[i], 16) + "</td> <td>" + obj.periodNames[i] + "</td> <td> " + obj.periodAlarms[i] + " min before </td> <td><button class='edit' id=" + parseInt(obj.periodNumbers[i], 16) + ">✎</button></td> </tr>"
+                "<tr> <td>" + parseInt(obj.periodNumbers[i], 16) + "</td> <td>" + obj.periodNames[i] + "</td> <td> " + obj.periodAlarms[i] + " min before </td> <td><button class='edit' id=" + parseInt(obj.periodNumbers[i], 16) + " title='edit period'>✎</button></td> </tr>"
             ;
             tempButtons.push(parseInt(obj.periodNumbers[i], 16));
             // console.log(tempButton);

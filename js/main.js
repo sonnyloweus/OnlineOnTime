@@ -37,22 +37,24 @@ chrome.storage.sync.get({
     Wednes: [],
     Thurs: [],
     Fri: [],
-    WeekA: [],
-    WeekB: [],
-    week: [],
-    addOn: []
+    addOn: [],
+    calendar: []
 }, function extensionClicked(obj) {
 
+    if(obj.addOn.length == 0){
+        obj.addOn = [
+            [],
+            [],
+            [],
+            [],
+            []
+        ]
+    }
+    chrome.storage.sync.set(obj);
+
+    initializeDay(obj);
     drawWeekSchedule(obj);   
     drawTodaySchedule(obj); 
-
-    if(obj.week[0] == "weekA"){
-        templateB.style.fontWeight = "initial";
-        templateA.style.fontWeight = "600";
-    }else{
-        templateA.style.fontWeight = "100";
-        templateB.style.fontWeight = "600";
-    }
 
     chrome.alarms.getAll(function(a){
         // console.log(a);
@@ -61,10 +63,10 @@ chrome.storage.sync.get({
             // console.log(a);
             for(let i = 0; i < a.length; i++){
                 let date = new Date(a[i].scheduledTime);
-                console.log(a);
+                // console.log(a);
                 // console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
             }
-            console.log("################");
+            // console.log("################");
         });
     });
 
@@ -100,13 +102,15 @@ function update(){
         Wednes: [],
         Thurs: [],
         Fri: [],
-        week: []
+        addOn: [],
+        calendar: []
     }, function extensionClicked(obj) {
 
         todayTable.innerHTML = "<tr><th>Time</th><th colspan='2' style='text-align: left;'>Period</th> </tr>";
         weekTable.innerHTML = "<colgroup><col id='Mon' /><col id='Tues'/><col id='Wednes' /><col id='Thurs'/><col id='Fri' />"
         + "</colgroup><tr style='background-color: lightblue;'><th>Mon</th><th>Tue</th> <th>Wed</th><th>Thu</th> <th>Fri</th></tr>";
 
+        initializeDay(obj);
         drawWeekSchedule(obj);   
         drawTodaySchedule(obj); 
     
@@ -117,13 +121,16 @@ function update(){
                 // console.log(a);
                 for(let i = 0; i < a.length; i++){
                     let date = new Date(a[i].scheduledTime);
-                    console.log(a);
+                    // console.log(a);
                     // console.log(a[i].name + " : " + (date.getMonth()+1) + "/" + date.getDate() + ", " + date.getHours() + ":" + date.getMinutes());
                 }
-                console.log("################");
+                // console.log("################");
             });
         });
         chrome.storage.sync.set(obj, function(){});
     });
     
 }
+
+
+  
