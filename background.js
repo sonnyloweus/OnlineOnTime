@@ -14,7 +14,6 @@ chrome.runtime.onInstalled.addListener(function() {
     }]);
   });
 
-
 });
 
 
@@ -28,7 +27,7 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
     if(alarmTime.getTime() > tempCurrentTime.getTime()){
 
       chrome.storage.sync.set({}, function (obj) {
-        let periodNum = (parseInt(alarm.name.substring(3), 16));
+        let periodNum = (parseInt(alarm.name.substring(alarm.name.length -1), 16));
         let notificationOptions = {
             type: 'basic',
             iconUrl: 'images/OnlineOnTimeIcon534.png',
@@ -39,7 +38,11 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
         chrome.notifications.create(alarm.name, notificationOptions);
       });
 
+    }else{
+      console.log("overdue");
     }
+  }else{
+    console.log("weekend");
   }
 
   chrome.alarms.getAll(function(a){ 
