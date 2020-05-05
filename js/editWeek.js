@@ -158,8 +158,16 @@ function insertPeriodBelow(num, weekday){
         let list = (weekday == "Mon" ? obj.Mon : weekday=="Tues" ? obj.Tues: weekday == "Wednes" ? obj.Wednes: weekday == "Thurs" ? obj.Thurs:obj.Fri);
         let dayList = Array.from(list);
 
-        let newTime = document.getElementById("newTime" + num).value;
-        let tempPerNum = parseInt(document.getElementById("setNewPeriod" + num).value);
+        let newTime = "12:00";
+        if(document.getElementById("newTime" + num) != null){
+            newTime = document.getElementById("newTime" + num).value;
+        }
+
+        let tempPerNum = 1;
+        if(document.getElementById("setNewPeriod" + num) != null){
+            tempPerNum = parseInt(document.getElementById("setNewPeriod" + num).value);
+        }
+
         let newPeriod = tempPerNum.toString(16);
         let amOrpm = "am";
         if(newTime >= "13:00"){

@@ -60,64 +60,69 @@ function drawTodaySchedule(obj){
     let dayList = Array.from(list);
     let previous = false;
     // each period has: period number, period name, length, alarmTime, passingLength
-    for(let i = 0; i < dayList.length; i++ ){
-        let periodNum = parseInt(dayList[i].substring(dayList[i].length-1), 16);
-        let periodTime = dayList[i].substring(0, dayList[i].length-1);
-        let timeOnly = dayList[i].substring(0, dayList[i].length-3);
-        let pmOrAm = dayList[i].substring(dayList[i].length-3, dayList[i].length-1);
 
-        
-        let periodLength = periods[periodNum-1][2];
-        let passingLength = periods[periodNum-1][4];
-        // console.log(periods);
+    if(dayList.length == 0){
+        "<tr> <td></td>  <td></td>  <td>No School</td> </tr>"
+    }else{
+        for(let i = 0; i < dayList.length; i++ ){
+            let periodNum = parseInt(dayList[i].substring(dayList[i].length-1), 16);
+            let periodTime = dayList[i].substring(0, dayList[i].length-1);
+            let timeOnly = dayList[i].substring(0, dayList[i].length-3);
+            let pmOrAm = dayList[i].substring(dayList[i].length-3, dayList[i].length-1);
 
-        let e = new Date(d.getTime() - ((parseInt(periodLength) + parseInt(passingLength))*60000));
+            
+            let periodLength = periods[periodNum-1][2];
+            let passingLength = periods[periodNum-1][4];
+            // console.log(periods);
 
-        let hour = timeOnly.substring(0, timeOnly.length-3);
-        if(pmOrAm == "pm" && hour != "12"){
-            hour = parseInt(hour) + 12;
+            let e = new Date(d.getTime() - ((parseInt(periodLength) + parseInt(passingLength))*60000));
+
+            let hour = timeOnly.substring(0, timeOnly.length-3);
+            if(pmOrAm == "pm" && hour != "12"){
+                hour = parseInt(hour) + 12;
+            }
+            if(hour <= 9){
+                hour = "0" + hour;
+            }
+
+            let tempTime = hour + ":" + timeOnly.substring(timeOnly.length-2) + ":00";
+
+            let eMin = e.getMinutes();
+            if(eMin < 10){
+                eMin = "0" + eMin;
+            }
+            let eHour = e.getHours();
+            if(eHour < 10){
+                eHour = "0" + eHour;
+            }
+            e = (eHour + ":" + eMin + ":" + e.getSeconds());
+
+            // currentTime = current Time
+            // e = currentTime - (the period's length plus it's passing length)
+            // tempTime = the period's time
+
+            if( currentTime >= tempTime && e <=  tempTime){
+                // console.log(currentTime + " / " + tempTime + " / " + e);
+                todayTable.innerHTML = todayTable.innerHTML + 
+                //start time, period num, period name
+                    "<tr style='background-color: lightblue'> <td> 🔔 " + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
+                ;
+                previous = true;
+            }else if(previous){
+                previous = false;
+                todayTable.innerHTML = todayTable.innerHTML + 
+                //start time, period num, period name
+                    "<tr style='background-color: rgb(224, 237, 241)'> <td>" + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
+                ;
+            }else{
+                // console.log(currentTime + " / " + tempTime + " / " + e);
+                todayTable.innerHTML = todayTable.innerHTML + 
+                //start time, period num, period name
+                    "<tr> <td>" + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
+                ;
+            }
+
         }
-        if(hour <= 9){
-            hour = "0" + hour;
-        }
-
-        let tempTime = hour + ":" + timeOnly.substring(timeOnly.length-2) + ":00";
-
-        let eMin = e.getMinutes();
-        if(eMin < 10){
-            eMin = "0" + eMin;
-        }
-        let eHour = e.getHours();
-        if(eHour < 10){
-            eHour = "0" + eHour;
-        }
-        e = (eHour + ":" + eMin + ":" + e.getSeconds());
-
-        // currentTime = current Time
-        // e = currentTime - (the period's length plus it's passing length)
-        // tempTime = the period's time
-
-        if( currentTime >= tempTime && e <=  tempTime){
-            // console.log(currentTime + " / " + tempTime + " / " + e);
-            todayTable.innerHTML = todayTable.innerHTML + 
-            //start time, period num, period name
-                "<tr style='background-color: lightblue'> <td> 🔔 " + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
-            ;
-            previous = true;
-        }else if(previous){
-            previous = false;
-            todayTable.innerHTML = todayTable.innerHTML + 
-            //start time, period num, period name
-                "<tr style='background-color: rgb(224, 237, 241)'> <td>" + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
-            ;
-        }else{
-            // console.log(currentTime + " / " + tempTime + " / " + e);
-            todayTable.innerHTML = todayTable.innerHTML + 
-            //start time, period num, period name
-                "<tr> <td>" + periodTime + "</td>  <td>" + periodNum + "</td>  <td>" + periods[periodNum-1][1] + "</td> </tr>"
-            ;
-        }
-
     }
 }
 
@@ -224,7 +229,11 @@ function drawWeekSchedule(obj){
             let list = (theDay == "Mon" ? obj.Mon : theDay=="Tues" ? obj.Tues: theDay == "Wednes" ? obj.Wednes: theDay == "Thurs" ? obj.Thurs:obj.Fri);
             let dayList = Array.from(list);
 
-            if(!(dayList.length - 1 < i)){
+            if(dayList.length == 0){
+                if(i == 0){
+                    htmlString = htmlString + "<td>No School</td>";
+                }
+            }else if(!(dayList.length - 1 < i)){
                 htmlString = htmlString +
                     "<td>"+ dayList[i].substring(0, dayList[i].length - 1) + " " + parseInt(dayList[i].substring(dayList[i].length - 1), 16) +"</td>"
                 ;

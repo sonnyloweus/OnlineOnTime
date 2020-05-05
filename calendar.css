@@ -38,13 +38,10 @@
     height: 535px;
     background: #fdfdfd;
     margin: 0 auto;
+    padding-top: 30px;
     border-radius: 10px;
     box-shadow: none;
     overflow: hidden;
-}
-
-.datepicker .datepicker-header {
-    height: 150px;
 }
 
 .datepicker .datepicker-header p{
@@ -53,6 +50,19 @@
 
 #vertically p:first-of-type{
     margin-top: 20px;
+}
+
+#vertically{
+    text-align: center;
+    width: calc(100% - 40px);
+    position: absolute;
+    left: 50%;
+    top: 68%;
+    transform: translate(-50%);
+    height: 160px;
+    border: 2px solid lightblue;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .datepicker .ui-datepicker-inline {
@@ -102,7 +112,7 @@
 .datepicker .ui-datepicker-calendar tr th,
 .datepicker .ui-datepicker-calendar tr td {
     font-size: 19px;
-    padding-bottom: 13px;
+    padding-bottom: 4px;
 }
 
 .datepicker .ui-datepicker-calendar a {

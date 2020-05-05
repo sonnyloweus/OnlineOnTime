@@ -18,17 +18,53 @@ let calendar =
         ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
         ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
         ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
-        ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
-        ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"]
+        [],
+        []
     ],
 
     [
         ["4/13"],
-        ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
-        ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
-        ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
-        ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
-        ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"]
+        [],
+        [],
+        [],
+        [],
+        []
+    ],
+
+    [
+      ["4/20"],
+      ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+      ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+      ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"]
+    ],
+    
+    [
+      ["4/27"],
+      ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
+      ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
+      ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"]
+    ],
+
+    [
+      ["5/4"],
+      [],
+      ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+      ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"]
+    ],
+
+    [
+      ["5/11"],
+      ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+      ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+      ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+      ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"]
     ]
 
 ]
@@ -67,40 +103,44 @@ chrome.runtime.onInstalled.addListener(function(details) {
 
   if(details.reason == "install" || details.reason == "update"){
 
-    chrome.storage.sync.get({
-      calendar: []
-    }, function(obj){
+    // chrome.storage.sync.clear(function() {
 
-      let thisWeek = setToMonday();
-      for (let i=0; i<calendar.length; i++) {
-        if(calendar[i][0][0] == thisWeek){
-          obj.calendar = calendar[i];
-          break;
+      chrome.storage.sync.get({
+        calendar: []
+      }, function(obj){
+  
+        let thisWeek = setToMonday();
+        for (let i=0; i<calendar.length; i++) {
+          if(calendar[i][0][0] == thisWeek){
+            obj.calendar = calendar[i];
+            break;
+          }
         }
+  
+        chrome.storage.sync.set(obj);
+      });
+  
+      let n = new Date();
+      let nNum = n.getDay();
+  
+      //how many days the next saturday is away
+      let saturdayAhead = 6 - nNum;
+      if(saturdayAhead == 0){
+        saturdayAhead = 7;
       }
-
-      chrome.storage.sync.set(obj);
-    });
-
-    let n = new Date();
-    let nNum = n.getDay();
-
-    //how many days the next saturday is away
-    let saturdayAhead = 6 - nNum;
-    if(saturdayAhead == 0){
-      saturdayAhead = 7;
-    }
-
-    n.setDate(n.getDate() + saturdayAhead); 
-    n.setHours(18);
-    n.setMinutes(30);
-
-    // console.log(n.getMonth() + "/" + n.getDate());
-    // console.log(n.getHours() + ":" + n.getMinutes());
-
-    chrome.alarms.create("Update", {
-      when: n.getTime(),
-    });
+  
+      n.setDate(n.getDate() + saturdayAhead); 
+      n.setHours(18);
+      n.setMinutes(30);
+  
+      // console.log(n.getMonth() + "/" + n.getDate());
+      // console.log(n.getHours() + ":" + n.getMinutes());
+  
+      chrome.alarms.create("Update", {
+        when: n.getTime(),
+      });
+      
+    // });
   
   }
 
@@ -122,7 +162,8 @@ function alarmUpdate(obj, day, d){
         hour = parseInt(hour) + 12;
     }
 
-    let notify =  parseInt( obj.periodAlarms[ parseInt(dayList[i].substring(dayList[i].length-1 )-1)]  );
+    let indexNumTemp = parseInt(dayList[i].substring(dayList[i].length-1 ), 16) - 1;
+    let notify =  parseInt( obj.periodAlarms[indexNumTemp]  );
     let minute = parseInt((dayList[i].substring(dayList[i].length-5, dayList[i].length-3))) ;
 
     // console.log( d.getFullYear() + ", " + d.getMonth() + ", " + d.getDate() + ", " + hour + ", " + minute + ", " + "0" + ", " +  "0" );

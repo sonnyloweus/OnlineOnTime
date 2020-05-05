@@ -1,6 +1,6 @@
 {
   "name": "OnlineOnTime",
-  "version": "0.2.0",
+  "version": "0.3.3",
   "description": "Never Miss an Online Class Period Again",
   "permissions": ["declarativeContent", "storage", "alarms", "notifications"],
   "background": {

@@ -54,17 +54,53 @@ let calendar =
         ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
         ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
         ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
-        ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
-        ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"]
+        [],
+        []
     ],
 
     [
         ["4/13"],
+        [],
+        [],
+        [],
+        [],
+        []
+    ],
+
+    [
+        ["4/20"],
         ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
         ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
         ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
         ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
         ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"]
+    ],
+    
+    [
+        ["4/27"],
+        ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
+        ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
+        ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"],
+        ["8:15am8", "9:30am1", "10:45am2","11:55am9", "12:30am3", "1:45pm4"],
+        ["8:15am8", "9:30am5", "10:45am6","11:55am9", "12:30am7"]
+    ],
+
+    [
+        ["5/4"],
+        [],
+        ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+        ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+        ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+        ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"]
+    ],
+
+    [
+        ["5/11"],
+        ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+        ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+        ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"],
+        ["8:15am8", "9:30am1", "10:45am2", "11:55am9", "12:30am3", "1:45pm4"],
+        ["8:15am8", "9:30am5", "10:45am6", "11:55am9", "12:30am7"]
     ]
 
 ]
@@ -86,6 +122,11 @@ function printDay(date){
 
     if(week != setToMonday(new Date(tempWeek[2], parseInt(tempWeek[0])-1, parseInt(tempWeek[1])))){
 
+        let para = document.createElement("P"); 
+        let t = document.createTextNode(parseInt(tempWeek[0])-1 + "/" + parseInt(tempWeek[1]) + "/" + tempWeek[2]);
+        para.appendChild(t);  
+        calendarHeader.appendChild(para);
+
         if(clickDay.getDay() == 6 || clickDay.getDay() == 0){
             let para = document.createElement("P"); 
             let t = document.createTextNode("No School");
@@ -95,12 +136,19 @@ function printDay(date){
 
             let tempToday = week[clickDay.getDay()];
             console.log(tempToday);
-            
-            for(let i = 0; i < tempToday.length; i++){
+
+            if(tempToday.length == 0){
                 let para = document.createElement("P");                    
-                let t = document.createTextNode(" " + tempToday[i].substring(0, tempToday[i].length-1) + " Period " + parseInt(tempToday[i].substring(tempToday[i].length-1), 16));    
+                let t = document.createTextNode("No School");    
                 para.appendChild(t);  
                 calendarHeader.appendChild(para);
+            }else{
+                for(let i = 0; i < tempToday.length; i++){
+                    let para = document.createElement("P");                    
+                    let t = document.createTextNode(" " + tempToday[i].substring(0, tempToday[i].length-1) + " Period " + parseInt(tempToday[i].substring(tempToday[i].length-1), 16));    
+                    para.appendChild(t);  
+                    calendarHeader.appendChild(para);
+                }
             }
         
         }

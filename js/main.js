@@ -52,7 +52,10 @@ chrome.storage.sync.get({
     }
     chrome.storage.sync.set(obj);
 
+    console.log(obj.periodAlarms);
+
     initializeDay(obj);
+    createAlarms(obj);
     drawWeekSchedule(obj);   
     drawTodaySchedule(obj); 
 
@@ -131,6 +134,7 @@ function update(){
     });
     
 }
+
 
 
   
